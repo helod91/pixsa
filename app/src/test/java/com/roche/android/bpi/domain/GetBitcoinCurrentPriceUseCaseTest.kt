@@ -1,8 +1,8 @@
 package com.roche.android.bpi.domain
 
-import com.roche.android.bpi.data.BpiRepository
+import com.roche.android.bpi.domain.entity.BitcoinCurrency
 import com.roche.android.bpi.domain.entity.Data
-import com.roche.android.bpi.domain.entity.currencyprice.BpiPriceInfo
+import com.roche.android.bpi.domain.repository.BpiRepository
 import com.roche.android.bpi.domain.usecase.GetBitcoinCurrentPriceUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -27,7 +27,7 @@ class GetBitcoinCurrentPriceUseCaseTest {
     fun `getBitcoinCurrentPriceUseCase returns error result on error`() {
         runBlocking {
             val exception: HttpException = mock()
-            val mockedResult = Data.error<BpiPriceInfo>(exception)
+            val mockedResult = Data.error<HashMap<String, BitcoinCurrency>>(exception)
             whenever(bpiRepository.getBitcoinCurrentPrice()).thenReturn(mockedResult)
 
             val result = getBitcoinCurrentPriceUseCase.execute()
@@ -39,8 +39,8 @@ class GetBitcoinCurrentPriceUseCaseTest {
     @Test
     fun `getBitcoinCurrentPriceUseCase returns success result with price info on success`() {
         runBlocking {
-            val priceInfo: BpiPriceInfo = mock()
-            val mockedResult = Data.success(priceInfo)
+            val currencyMap: HashMap<String, BitcoinCurrency> = mock()
+            val mockedResult = Data.success(currencyMap)
             whenever(bpiRepository.getBitcoinCurrentPrice()).thenReturn(mockedResult)
 
             val result = getBitcoinCurrentPriceUseCase.execute()
