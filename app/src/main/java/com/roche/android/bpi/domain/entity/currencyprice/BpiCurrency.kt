@@ -1,4 +1,4 @@
-package com.roche.android.bpi.domain.entity
+package com.roche.android.bpi.domain.entity.currencyprice
 
 data class BpiCurrency(
     val code: String,

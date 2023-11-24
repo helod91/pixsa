@@ -15,14 +15,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel.loadCurrentPrices()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.bpiData.observe(this) { priceData ->
-            binding.tvCurrencyEur.text = priceData.bpi.EUR.rate
-            binding.tvCurrencyGbp.text = priceData.bpi.GBP.rate
-            binding.tvCurrencyUsd.text = priceData.bpi.USD.rate
+        viewModel.bpiData.observe(this) { result ->
+            result.result?.let { priceData ->
+                binding.tvCurrencyEur.text = priceData.bpi.EUR.rate
+                binding.tvCurrencyGbp.text = priceData.bpi.GBP.rate
+                binding.tvCurrencyUsd.text = priceData.bpi.USD.rate
+            }
         }
     }
 }
