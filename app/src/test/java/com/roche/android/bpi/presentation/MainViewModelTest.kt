@@ -1,10 +1,14 @@
 package com.roche.android.bpi.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.roche.android.bpi.domain.entity.BitcoinCurrency
+import com.roche.android.bpi.domain.entity.BitcoinCurrencyResult
 import com.roche.android.bpi.domain.entity.Data
 import com.roche.android.bpi.domain.usecase.GetBitcoinCurrentPriceUseCase
+import com.roche.android.bpi.presentation.features.currencies.CurrenciesState
+import com.roche.android.bpi.presentation.features.currencies.CurrenciesViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -17,9 +21,7 @@ import retrofit2.HttpException
 class MainViewModelTest {
 
     private lateinit var getBitcoinCurrentPriceUseCase: GetBitcoinCurrentPriceUseCase
-    private lateinit var mainViewModel: MainViewModel
-
-    private lateinit var results: MutableList<Data<HashMap<String, BitcoinCurrency>>>
+    private lateinit var viewModel: CurrenciesViewModel
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -27,39 +29,52 @@ class MainViewModelTest {
     @Before
     fun before() {
         getBitcoinCurrentPriceUseCase = mock()
-        results = mutableListOf()
-        mainViewModel = MainViewModel(getBitcoinCurrentPriceUseCase)
-        mainViewModel.bpiData.observeForever {
-            results.add(it)
-        }
+        viewModel = CurrenciesViewModel(getBitcoinCurrentPriceUseCase)
     }
 
     @Test
     fun `Should emit error result when use case results an error`() {
         runBlocking {
             val exception: HttpException = mock()
-            val errorResult = Data.error<HashMap<String, BitcoinCurrency>>(exception)
+            val errorResult = Data.error<BitcoinCurrencyResult>(exception)
 
-            whenever(getBitcoinCurrentPriceUseCase.execute()).thenReturn(errorResult)
+            whenever(getBitcoinCurrentPriceUseCase()).thenReturn(errorResult)
 
-            mainViewModel.loadCurrentPrices()
+            val emittedValues = mutableListOf<CurrenciesState>()
+            val job = launch {
+                viewModel.state.toList(emittedValues)
+            }
+
+            viewModel.loadCurrentPrices()
+
             delay(200)
 
-            Assert.assertEquals(results[0], errorResult)
+            Assert.assertTrue(emittedValues[0].loading)
+            Assert.assertEquals(emittedValues[1].error, exception)
+            job.cancel()
         }
     }
 
     @Test
     fun `Should emit success result when use case results a success`() {
         runBlocking {
-            val successResult = Data.success<HashMap<String, BitcoinCurrency>>(mock())
+            val successResult = Data.success<BitcoinCurrencyResult>(mock())
 
-            whenever(getBitcoinCurrentPriceUseCase.execute()).thenReturn(successResult)
+            whenever(getBitcoinCurrentPriceUseCase()).thenReturn(successResult)
 
-            mainViewModel.loadCurrentPrices()
+            val emittedValues = mutableListOf<CurrenciesState>()
+            val job = launch {
+                viewModel.state.toList(emittedValues)
+            }
+
+            viewModel.loadCurrentPrices()
+
             delay(200)
 
-            Assert.assertEquals(results[0], successResult)
+            Assert.assertTrue(emittedValues[0].loading)
+            Assert.assertNotNull(emittedValues[1].currencies)
+
+            job.cancel()
         }
     }
 }

@@ -2,10 +2,12 @@ package com.roche.android.bpi.data.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.roche.android.bpi.data.apiservice.GsonDateDeSerializer
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Date
 
 private const val BASE_URL = "https://api.coindesk.com/"
 
@@ -18,6 +20,7 @@ val networkModules = module {
 
     single<Gson> {
         GsonBuilder()
+            .registerTypeAdapter(Date::class.java, GsonDateDeSerializer())
             .setLenient()
             .create()
     }

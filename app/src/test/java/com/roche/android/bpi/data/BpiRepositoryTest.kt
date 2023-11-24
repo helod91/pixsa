@@ -4,7 +4,7 @@ import com.roche.android.bpi.data.datasource.BpiPriceInfoDataSource
 import com.roche.android.bpi.data.entity.BpiPriceInfo
 import com.roche.android.bpi.data.mapper.BitcoinCurrencyMapper
 import com.roche.android.bpi.data.repository.BpiRepositoryImpl
-import com.roche.android.bpi.domain.entity.BitcoinCurrency
+import com.roche.android.bpi.domain.entity.BitcoinCurrencyResult
 import com.roche.android.bpi.domain.repository.BpiRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -44,9 +44,11 @@ class BpiRepositoryTest {
     fun `getBitcoinCurrentPrices API service success results in an success result with priceInfo`() {
         runBlocking {
             val priceInfo: BpiPriceInfo = mock()
-            val mockedResult: HashMap<String, BitcoinCurrency> = mock()
+            val mockedResult: BitcoinCurrencyResult = mock()
             whenever(bpiPriceInfoDataSource.getBitcoinCurrentPrices()).thenReturn(priceInfo)
-            whenever(bitcoinCurrencyMapper.toBitcoinCurrencyMap(priceInfo)).thenReturn(mockedResult)
+            whenever(bitcoinCurrencyMapper.toBitcoinCurrencyResult(priceInfo)).thenReturn(
+                mockedResult
+            )
 
             val result = bpiRepository.getBitcoinCurrentPrice()
 
