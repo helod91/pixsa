@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PIxSA Interview BPI</string>
+    <string name="title_bpi">Bitcoin Price Index (BPI)</string>
+    <string name="label_eur">EUR</string>
+    <string name="label_gbp">GBP</string>
+    <string name="label_usd">USD</string>
+</resources>
