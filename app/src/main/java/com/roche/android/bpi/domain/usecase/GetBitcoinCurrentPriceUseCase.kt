@@ -1,9 +1,10 @@
 package com.roche.android.bpi.domain.usecase
 
-import com.roche.android.bpi.data.BpiRepository
+import com.roche.android.bpi.domain.entity.BitcoinCurrency
 import com.roche.android.bpi.domain.entity.Data
-import com.roche.android.bpi.domain.entity.currencyprice.BpiPriceInfo
+import com.roche.android.bpi.domain.repository.BpiRepository
 
 class GetBitcoinCurrentPriceUseCase(private val repository: BpiRepository) {
-    suspend fun execute(): Data<BpiPriceInfo> = repository.getBitcoinCurrentPrice()
+    suspend fun execute(): Data<HashMap<String, BitcoinCurrency>> =
+        repository.getBitcoinCurrentPrice()
 }

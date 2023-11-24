@@ -1,6 +1,6 @@
 package com.roche.android.bpi.data.apiservice
 
-import com.roche.android.bpi.domain.entity.currencyprice.BpiPriceInfo
+import com.roche.android.bpi.data.entity.BpiPriceInfo
 import retrofit2.http.GET
 
 interface BpiApiService {

@@ -1,8 +1,8 @@
 package com.roche.android.bpi.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.roche.android.bpi.domain.entity.BitcoinCurrency
 import com.roche.android.bpi.domain.entity.Data
-import com.roche.android.bpi.domain.entity.currencyprice.BpiPriceInfo
 import com.roche.android.bpi.domain.usecase.GetBitcoinCurrentPriceUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -19,7 +19,7 @@ class MainViewModelTest {
     private lateinit var getBitcoinCurrentPriceUseCase: GetBitcoinCurrentPriceUseCase
     private lateinit var mainViewModel: MainViewModel
 
-    private lateinit var results: MutableList<Data<BpiPriceInfo>>
+    private lateinit var results: MutableList<Data<HashMap<String, BitcoinCurrency>>>
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -38,7 +38,7 @@ class MainViewModelTest {
     fun `Should emit error result when use case results an error`() {
         runBlocking {
             val exception: HttpException = mock()
-            val errorResult = Data.error<BpiPriceInfo>(exception)
+            val errorResult = Data.error<HashMap<String, BitcoinCurrency>>(exception)
 
             whenever(getBitcoinCurrentPriceUseCase.execute()).thenReturn(errorResult)
 
@@ -52,7 +52,7 @@ class MainViewModelTest {
     @Test
     fun `Should emit success result when use case results a success`() {
         runBlocking {
-            val successResult = Data.success<BpiPriceInfo>(mock())
+            val successResult = Data.success<HashMap<String, BitcoinCurrency>>(mock())
 
             whenever(getBitcoinCurrentPriceUseCase.execute()).thenReturn(successResult)
 

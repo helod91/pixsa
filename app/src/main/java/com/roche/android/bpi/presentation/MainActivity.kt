@@ -1,8 +1,7 @@
 package com.roche.android.bpi.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.roche.android.bpi.R
+import androidx.appcompat.app.AppCompatActivity
 import com.roche.android.bpi.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -16,17 +15,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.loadCurrentPrices()
-    }
-
-    override fun onResume() {
-        super.onResume()
         viewModel.bpiData.observe(this) { result ->
             result.result?.let { priceData ->
-                binding.tvCurrencyEur.text = priceData.bpi.EUR.rate
-                binding.tvCurrencyGbp.text = priceData.bpi.GBP.rate
-                binding.tvCurrencyUsd.text = priceData.bpi.USD.rate
+                binding.tvCurrencyEur.text = priceData["EUR"]?.rate
+                binding.tvCurrencyGbp.text = priceData["GBP"]?.rate
+                binding.tvCurrencyUsd.text = priceData["USD"]?.rate
             }
         }
+        viewModel.loadCurrentPrices()
     }
 }
