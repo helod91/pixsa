@@ -8,14 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.roche.android.bpi.domain.entity.BpiPriceInfo
 import com.roche.android.bpi.domain.usecase.GetBitcoinCurrentPriceUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class MainViewModel(
     private val app: Application
-): AndroidViewModel(app), KoinComponent {
+) : AndroidViewModel(app), KoinComponent {
 
     private val getBitcoinCurrentPriceUseCase: GetBitcoinCurrentPriceUseCase by inject()
 
@@ -24,9 +23,9 @@ class MainViewModel(
         get() = _bpiData
 
     init {
-        GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             val result = getBitcoinCurrentPriceUseCase.execute()
-            _bpiData.value = result
+            _bpiData.postValue(result)
         }
     }
 }
