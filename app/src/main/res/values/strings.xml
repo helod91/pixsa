@@ -8,4 +8,10 @@
     <string name="title_error">An error has occurred</string>
     <string name="body_unknown_error">Unknown error</string>
     <string name="retry">Retry</string>
+    <string name="error">Error</string>
+    <string name="login_again">Please login again.</string>
+    <string name="timeout">Please try again later.</string>
+    <string name="forbidden">You are not allowed here.</string>
+    <string name="unknown">Unknown issue occurred.</string>
+    <string name="ok">OK</string>
 </resources>

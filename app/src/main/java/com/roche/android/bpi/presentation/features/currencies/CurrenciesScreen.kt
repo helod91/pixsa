@@ -18,14 +18,11 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -41,6 +38,11 @@ import androidx.compose.ui.unit.dp
 import com.roche.android.bpi.R
 import com.roche.android.bpi.domain.entity.BitcoinCurrency
 import com.roche.android.bpi.domain.entity.BitcoinCurrencyResult
+import com.roche.android.bpi.presentation.common.arch.SideEffect
+import com.roche.android.bpi.presentation.common.arch.ViewEvent
+import com.roche.android.bpi.presentation.common.arch.ViewState
+import com.roche.android.bpi.presentation.common.model.CommonState
+import com.roche.android.bpi.presentation.common.view.handleCommonEffect
 import com.roche.android.bpi.presentation.theme.SIDE_EFFECT_KEY
 import kotlinx.coroutines.channels.Channel
 import java.text.SimpleDateFormat
@@ -50,33 +52,23 @@ import java.util.Locale
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CurrenciesScreen(
-    state: CurrenciesState,
-    effects: Channel<CurrenciesEffect>?,
-    onEvent: (event: CurrenciesEvent) -> Unit
+    state: ViewState,
+    effects: Channel<SideEffect>?,
+    onEvent: (event: ViewEvent) -> Unit,
+    onNavigation: (navigationEffect: SideEffect) -> Unit
 ) {
 
     val snackbarHostState = remember { SnackbarHostState() }
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.loading,
+        refreshing = state is CommonState.Loading,
         onRefresh = { onEvent(CurrenciesEvent.Refresh) }
     )
 
     LaunchedEffect(SIDE_EFFECT_KEY) {
         if (effects != null) {
             for (effect in effects) {
-                when (effect) {
-                    CurrenciesEffect.DataLoadedSuccessfully ->
-                        snackbarHostState.showSnackbar(
-                            message = "Currencies loaded successfully",
-                            duration = SnackbarDuration.Short
-                        )
-
-                    CurrenciesEffect.DataLoadingError ->
-                        snackbarHostState.showSnackbar(
-                            message = "Error loading currencies",
-                            duration = SnackbarDuration.Short
-                        )
-                }
+                handleCommonEffect(effect, snackbarHostState, onNavigation)
+                //TODO handle screen specific effects
             }
         }
     }
@@ -104,18 +96,18 @@ fun CurrenciesScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                when {
-                    state.error != null ->
-                        CurrencyLoadError(state.error, onEvent)
-
-                    state.currencies != null ->
-                        CurrenciesList(state.currencies)
+                when (state) {
+                    is CurrenciesState.Content -> {
+                        if (state.currencies != null) {
+                            CurrenciesList(state.currencies)
+                        }
+                    }
                 }
             }
 
             PullRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
-                refreshing = state.loading,
+                refreshing = state is CommonState.Loading,
                 state = pullRefreshState
             )
         }
@@ -133,26 +125,6 @@ private fun CurrenciesTopBar(onEvent: (event: CurrenciesEvent) -> Unit) {
             }
         }
     )
-}
-
-@Composable
-private fun CurrencyLoadError(error: Throwable, onEvent: (event: CurrenciesEvent) -> Unit) {
-    Column(Modifier.padding(16.dp)) {
-        Text(
-            text = stringResource(R.string.title_error),
-            style = MaterialTheme.typography.headlineSmall
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(error.message ?: stringResource(R.string.body_unknown_error))
-
-        Spacer(Modifier.height(16.dp))
-
-        Button(onClick = { onEvent(CurrenciesEvent.Retry) }) {
-            Text(stringResource(R.string.retry))
-        }
-    }
 }
 
 @Composable
@@ -192,15 +164,6 @@ private fun CurrenciesList(bitcoinCurrencyResult: BitcoinCurrencyResult) {
 
 @Preview
 @Composable
-fun ErrorCurrenciesScreenPreview() {
-    CurrenciesScreen(
-        state = CurrenciesState(error = Exception("Something went wrong...")),
-        effects = null
-    ) {}
-}
-
-@Preview
-@Composable
 fun SuccessCurrenciesScreenPreview() {
     val currencies = arrayListOf(
         BitcoinCurrency("33", "-", "EUR"),
@@ -210,7 +173,9 @@ fun SuccessCurrenciesScreenPreview() {
     val result = BitcoinCurrencyResult(currencies, Date())
 
     CurrenciesScreen(
-        state = CurrenciesState(currencies = result),
-        effects = null
-    ) {}
+        state = CurrenciesState.Content(result),
+        effects = null,
+        {},
+        {}
+    )
 }

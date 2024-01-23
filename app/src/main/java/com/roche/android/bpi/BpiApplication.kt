@@ -7,6 +7,7 @@ import com.roche.android.bpi.data.di.mapperModules
 import com.roche.android.bpi.data.di.networkModules
 import com.roche.android.bpi.data.di.repositoryModules
 import com.roche.android.bpi.domain.di.useCaseModule
+import com.roche.android.bpi.presentation.common.commonModule
 import com.roche.android.bpi.presentation.di.viewModelModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -27,6 +28,7 @@ class BpiApplication : Application() {
                     networkModules,
                     repositoryModules,
                     useCaseModule,
+                    commonModule,
                     viewModelModules
                 )
             )
