@@ -16,7 +16,7 @@ fun AppNavigation() {
         composable(
             route = Navigation.Routes.CURRENCIES
         ) {
-            CurrenciesScreenDestination()
+            CurrenciesScreenDestination(navController)
         }
     }
 }

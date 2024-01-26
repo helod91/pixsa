@@ -11,13 +11,12 @@ import com.roche.android.bpi.presentation.common.arch.ViewEvent
 import com.roche.android.bpi.presentation.common.arch.ViewState
 import com.roche.android.bpi.presentation.common.arch.model
 import com.roche.android.bpi.presentation.common.dispatcher.DispatcherProvider
-import com.roche.android.bpi.presentation.common.model.CommonState
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.component.KoinComponent
 
 class CurrenciesViewModel(
     eventProcessors: Collection<EventProcessor>,
-    reducers: Collection<Reducer>,
+    reducers: Collection<Reducer<CurrenciesState>>,
     dispatcherProvider: DispatcherProvider
 ) : ViewModel(), KoinComponent {
 
@@ -25,10 +24,10 @@ class CurrenciesViewModel(
         eventProcessors,
         reducers,
         dispatcherProvider,
-        CommonState.Loading
+        CurrenciesState()
     )
 
-    internal val state: State<ViewState> get() = model.viewState
+    internal val state: State<CurrenciesState> get() = model.viewState
     internal val effect: Channel<SideEffect> get() = model.effect
 
     init {
@@ -38,11 +37,13 @@ class CurrenciesViewModel(
     fun onEvent(event: ViewEvent) = model.process(event)
 }
 
-sealed interface CurrenciesState : ViewState {
-    data class Content(val currencies: BitcoinCurrencyResult?) : CurrenciesState
-}
+data class CurrenciesState(
+    val content: BitcoinCurrencyResult? = null,
+    val contentLoading: Boolean = false
+) : ViewState
 
 sealed interface CurrenciesMutation : Mutation {
+    data object ShowLoadContent : CurrenciesMutation
     data class ShowContent(val currencies: BitcoinCurrencyResult?) : CurrenciesMutation
 }
 

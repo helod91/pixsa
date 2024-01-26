@@ -5,18 +5,17 @@ import androidx.compose.runtime.State
 import com.roche.android.bpi.presentation.common.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
-class Model(
+class Model<UiState : ViewState>(
     private val eventProcessors: Collection<EventProcessor>,
-    private val reducers: Collection<Reducer>,
+    private val reducers: Collection<Reducer<UiState>>,
     private val coroutineScope: CoroutineScope,
     private val dispatcherProvider: DispatcherProvider,
-    private val viewMutableState: MutableState<ViewState>
+    private val viewMutableState: MutableState<UiState>
 ) {
-    val viewState: State<ViewState> = viewMutableState
+    val viewState: State<UiState> = viewMutableState
     val effect: Channel<SideEffect> = Channel(Channel.BUFFERED)
 
     fun process(event: ViewEvent) {
@@ -33,8 +32,8 @@ class Model(
     private fun handleMutation(mutation: Mutation) {
         reducers.asIterable()
             .forEach { reducer ->
-                reducer(mutation)?.let { state ->
-                    coroutineScope.launch(dispatcherProvider.ui) {
+                coroutineScope.launch(dispatcherProvider.ui) {
+                    reducer(mutation, viewMutableState.value)?.let { state ->
                         viewMutableState.value = state
                     }
                 }

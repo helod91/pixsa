@@ -40,8 +40,6 @@ import com.roche.android.bpi.domain.entity.BitcoinCurrency
 import com.roche.android.bpi.domain.entity.BitcoinCurrencyResult
 import com.roche.android.bpi.presentation.common.arch.SideEffect
 import com.roche.android.bpi.presentation.common.arch.ViewEvent
-import com.roche.android.bpi.presentation.common.arch.ViewState
-import com.roche.android.bpi.presentation.common.model.CommonState
 import com.roche.android.bpi.presentation.common.view.handleCommonEffect
 import com.roche.android.bpi.presentation.theme.SIDE_EFFECT_KEY
 import kotlinx.coroutines.channels.Channel
@@ -52,7 +50,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CurrenciesScreen(
-    state: ViewState,
+    state: CurrenciesState,
     effects: Channel<SideEffect>?,
     onEvent: (event: ViewEvent) -> Unit,
     onNavigation: (navigationEffect: SideEffect) -> Unit
@@ -60,7 +58,7 @@ fun CurrenciesScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state is CommonState.Loading,
+        refreshing = state.contentLoading,
         onRefresh = { onEvent(CurrenciesEvent.Refresh) }
     )
 
@@ -96,18 +94,15 @@ fun CurrenciesScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                when (state) {
-                    is CurrenciesState.Content -> {
-                        if (state.currencies != null) {
-                            CurrenciesList(state.currencies)
-                        }
-                    }
+                if (state.content != null) {
+                    CurrenciesList(state.content)
                 }
+
             }
 
             PullRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
-                refreshing = state is CommonState.Loading,
+                refreshing = state.contentLoading,
                 state = pullRefreshState
             )
         }
@@ -173,7 +168,7 @@ fun SuccessCurrenciesScreenPreview() {
     val result = BitcoinCurrencyResult(currencies, Date())
 
     CurrenciesScreen(
-        state = CurrenciesState.Content(result),
+        state = CurrenciesState(content = result),
         effects = null,
         {},
         {}

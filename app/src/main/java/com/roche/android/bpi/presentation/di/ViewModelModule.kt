@@ -1,7 +1,6 @@
 package com.roche.android.bpi.presentation.di
 
 import com.roche.android.bpi.presentation.common.CommonNavigationEventProcessor
-import com.roche.android.bpi.presentation.common.CommonReducer
 import com.roche.android.bpi.presentation.features.currencies.CurrenciesEventProcessor
 import com.roche.android.bpi.presentation.features.currencies.CurrenciesReducer
 import com.roche.android.bpi.presentation.features.currencies.CurrenciesViewModel
@@ -15,7 +14,6 @@ val viewModelModules = module {
             CurrenciesEventProcessor(get(), get())
         ),
         reducers = listOf(
-            CommonReducer(),
             CurrenciesReducer()
         ),
         dispatcherProvider = get()

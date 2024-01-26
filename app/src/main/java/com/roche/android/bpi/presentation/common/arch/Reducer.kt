@@ -1,5 +1,5 @@
 package com.roche.android.bpi.presentation.common.arch
 
-interface Reducer {
-    operator fun invoke(mutation: Mutation): ViewState?
+interface Reducer<UiState : ViewState> {
+    operator fun invoke(mutation: Mutation, currentState: UiState): UiState?
 }

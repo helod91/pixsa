@@ -8,11 +8,11 @@ import com.roche.android.bpi.presentation.common.dispatcher.DispatcherProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-fun model(
+fun <UiState : ViewState> model(
     eventProcessors: Collection<EventProcessor>,
-    reducers: Collection<Reducer>,
+    reducers: Collection<Reducer<UiState>>,
     dispatcherProvider: DispatcherProvider,
-    initialState: ViewState
+    initialState: UiState
 ) = ModelProperty(
     eventProcessors,
     reducers,
@@ -20,16 +20,16 @@ fun model(
     mutableStateOf(initialState)
 )
 
-class ModelProperty(
+class ModelProperty<UiState : ViewState>(
     private val eventProcessors: Collection<EventProcessor>,
-    private val reducers: Collection<Reducer>,
+    private val reducers: Collection<Reducer<UiState>>,
     private val dispatcherProvider: DispatcherProvider,
-    private val viewMutableState: MutableState<ViewState>
-) : ReadOnlyProperty<ViewModel, Model> {
+    private val viewMutableState: MutableState<UiState>
+) : ReadOnlyProperty<ViewModel, Model<UiState>> {
     override fun getValue(
         thisRef: ViewModel,
         property: KProperty<*>,
-    ): Model =
+    ): Model<UiState> =
         Model(
             eventProcessors = eventProcessors,
             reducers = reducers,

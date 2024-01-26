@@ -6,7 +6,6 @@ import com.roche.android.bpi.presentation.common.arch.Mutation
 import com.roche.android.bpi.presentation.common.arch.SideEffect
 import com.roche.android.bpi.presentation.common.arch.ViewEvent
 import com.roche.android.bpi.presentation.common.exception.ExceptionHandler
-import com.roche.android.bpi.presentation.common.model.CommonMutation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -26,7 +25,7 @@ class CurrenciesEventProcessor(
         }
 
     private suspend fun FlowCollector<Pair<Mutation?, SideEffect?>>.loadCurrentPrices() {
-        emit(CommonMutation.ShowLoader to null)
+        emit(CurrenciesMutation.ShowLoadContent to null)
 
         val result = getBitcoinCurrentPriceUseCase()
         if (result.result != null) {
