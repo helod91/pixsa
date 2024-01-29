@@ -40,7 +40,11 @@ import com.roche.android.bpi.domain.entity.BitcoinCurrency
 import com.roche.android.bpi.domain.entity.BitcoinCurrencyResult
 import com.roche.android.bpi.presentation.common.arch.SideEffect
 import com.roche.android.bpi.presentation.common.arch.ViewEvent
+import com.roche.android.bpi.presentation.common.model.CloseScreen
+import com.roche.android.bpi.presentation.common.view.handleActivityCompletion
 import com.roche.android.bpi.presentation.common.view.handleCommonEffect
+import com.roche.android.bpi.presentation.common.view.handleNetworkErrorEffect
+import com.roche.android.bpi.presentation.common.view.handleUnknownErrorEffect
 import com.roche.android.bpi.presentation.theme.SIDE_EFFECT_KEY
 import kotlinx.coroutines.channels.Channel
 import java.text.SimpleDateFormat
@@ -65,7 +69,13 @@ fun CurrenciesScreen(
     LaunchedEffect(SIDE_EFFECT_KEY) {
         if (effects != null) {
             for (effect in effects) {
-                handleCommonEffect(effect, snackbarHostState, onNavigation)
+                if (effect is CloseScreen) {
+                    onNavigation(effect)
+                }
+                handleCommonEffect(effect, snackbarHostState)
+                handleNetworkErrorEffect(effect)
+                handleUnknownErrorEffect(effect)
+                handleActivityCompletion(effect)
                 //TODO handle screen specific effects
             }
         }

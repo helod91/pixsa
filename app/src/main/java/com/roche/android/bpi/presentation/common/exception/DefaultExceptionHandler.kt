@@ -1,8 +1,8 @@
 package com.roche.android.bpi.presentation.common.exception
 
-import com.roche.android.bpi.R
 import com.roche.android.bpi.presentation.common.arch.SideEffect
-import com.roche.android.bpi.presentation.common.model.CommonEffect
+import com.roche.android.bpi.presentation.common.model.NetworkErrorEffect
+import com.roche.android.bpi.presentation.common.model.ShowUnknownErrorDialog
 import retrofit2.HttpException
 
 class DefaultExceptionHandler : ExceptionHandler {
@@ -11,13 +11,13 @@ class DefaultExceptionHandler : ExceptionHandler {
         //This is just an example
         return if (e is HttpException) {
             when (e.code()) {
-                401 -> CommonEffect.ShowErrorDialog(R.string.login_again)
-                403 -> CommonEffect.ShowErrorDialog(R.string.forbidden)
-                408 -> CommonEffect.ShowSnackbar(R.string.timeout)
-                else -> CommonEffect.ShowSnackbar(R.string.unknown)
+                401 -> NetworkErrorEffect.ShowUnauthorizedDialog
+                403 -> NetworkErrorEffect.ShowForbiddenDialog
+                408 -> NetworkErrorEffect.ShowTimeoutDialog
+                else -> ShowUnknownErrorDialog
             }
         } else {
-            CommonEffect.ShowSnackbar(R.string.unknown)
+            ShowUnknownErrorDialog
         }
     }
 }

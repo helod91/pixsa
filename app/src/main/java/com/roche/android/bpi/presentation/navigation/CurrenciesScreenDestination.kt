@@ -1,11 +1,10 @@
 package com.roche.android.bpi.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
-import com.roche.android.bpi.presentation.common.view.handleCommonNavigation
+import com.roche.android.bpi.presentation.common.model.CloseScreen
 import com.roche.android.bpi.presentation.features.currencies.CurrenciesScreen
 import com.roche.android.bpi.presentation.features.currencies.CurrenciesViewModel
 import org.koin.androidx.compose.getViewModel
@@ -22,7 +21,9 @@ fun CurrenciesScreenDestination(navController: NavController) {
             viewModel.onEvent(event)
         },
         onNavigation = { effect ->
-            handleCommonNavigation(effect, navController)
+            if (effect is CloseScreen) {
+                navController.popBackStack()
+            }
             //TODO handle other navigation effects
         }
     )
