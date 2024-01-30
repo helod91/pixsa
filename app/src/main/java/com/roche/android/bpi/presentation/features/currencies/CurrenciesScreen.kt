@@ -42,7 +42,6 @@ import com.roche.android.bpi.presentation.common.arch.SideEffect
 import com.roche.android.bpi.presentation.common.arch.ViewEvent
 import com.roche.android.bpi.presentation.common.model.CloseScreen
 import com.roche.android.bpi.presentation.common.view.handleActivityCompletion
-import com.roche.android.bpi.presentation.common.view.handleCommonEffect
 import com.roche.android.bpi.presentation.common.view.handleNetworkErrorEffect
 import com.roche.android.bpi.presentation.common.view.handleUnknownErrorEffect
 import com.roche.android.bpi.presentation.theme.SIDE_EFFECT_KEY
@@ -72,11 +71,16 @@ fun CurrenciesScreen(
                 if (effect is CloseScreen) {
                     onNavigation(effect)
                 }
-                handleCommonEffect(effect, snackbarHostState)
                 handleNetworkErrorEffect(effect)
                 handleUnknownErrorEffect(effect)
                 handleActivityCompletion(effect)
-                //TODO handle screen specific effects
+
+                if (effect is CurrenciesEffect) {
+                    when (effect) {
+                        CurrenciesEffect.CurrenciesFailedToLoad -> TODO()
+                        CurrenciesEffect.CurrenciesLoaded -> TODO()
+                    }
+                }
             }
         }
     }
@@ -87,9 +91,9 @@ fun CurrenciesScreen(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .pullRefresh(pullRefreshState)
+                    .fillMaxSize()
+                    .padding(it)
+                    .pullRefresh(pullRefreshState)
         ) {
             Column(Modifier.fillMaxSize()) {
                 Text(

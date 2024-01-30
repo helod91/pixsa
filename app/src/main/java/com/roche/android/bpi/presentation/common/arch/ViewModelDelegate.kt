@@ -8,7 +8,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
-class Model<UiState : ViewState>(
+class ViewModelDelegate<UiState : ViewState>(
     private val eventProcessors: Collection<EventProcessor>,
     private val reducers: Collection<Reducer<UiState>>,
     private val coroutineScope: CoroutineScope,

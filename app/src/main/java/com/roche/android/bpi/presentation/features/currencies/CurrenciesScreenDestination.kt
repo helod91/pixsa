@@ -1,12 +1,10 @@
-package com.roche.android.bpi.presentation.navigation
+package com.roche.android.bpi.presentation.features.currencies
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import com.roche.android.bpi.presentation.common.model.CloseScreen
-import com.roche.android.bpi.presentation.features.currencies.CurrenciesScreen
-import com.roche.android.bpi.presentation.features.currencies.CurrenciesViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable

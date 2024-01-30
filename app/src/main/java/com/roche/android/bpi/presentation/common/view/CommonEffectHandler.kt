@@ -1,25 +1,9 @@
 package com.roche.android.bpi.presentation.common.view
 
-import androidx.compose.material3.SnackbarHostState
-import androidx.navigation.NavController
 import com.roche.android.bpi.presentation.common.arch.SideEffect
 import com.roche.android.bpi.presentation.common.model.ActivityCompletion
-import com.roche.android.bpi.presentation.common.model.CloseScreen
-import com.roche.android.bpi.presentation.common.model.CommonEffect
 import com.roche.android.bpi.presentation.common.model.NetworkErrorEffect
 import com.roche.android.bpi.presentation.common.model.ShowUnknownErrorDialog
-
-fun handleCommonEffect(
-    effect: SideEffect,
-    snackbarHostState: SnackbarHostState,
-) {
-    if (effect is CommonEffect) {
-        when (effect) {
-            is CommonEffect.ShowDialog -> TODO()
-            is CommonEffect.ShowSnackbar -> TODO()
-        }
-    }
-}
 
 fun handleNetworkErrorEffect(
     effect: SideEffect
@@ -46,5 +30,7 @@ fun handleActivityCompletion(
 ) {
     if (effect is ActivityCompletion) {
         TODO()
+        //show snak
+        //show confetti
     }
 }

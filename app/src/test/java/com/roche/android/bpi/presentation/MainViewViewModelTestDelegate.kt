@@ -18,7 +18,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import retrofit2.HttpException
 
-class MainViewModelTest {
+class MainViewViewModelTestDelegate {
 
     private lateinit var getBitcoinCurrentPriceUseCase: GetBitcoinCurrentPriceUseCase
     private lateinit var viewModel: CurrenciesViewModel

@@ -2,12 +2,6 @@ package com.roche.android.bpi.presentation.common.model
 
 import com.roche.android.bpi.presentation.common.arch.SideEffect
 
-sealed interface CommonEffect : SideEffect {
-    data class ShowDialog(val messageRes: Int) : CommonEffect
-
-    data class ShowSnackbar(val messageRes: Int) : CommonEffect
-}
-
 data object CloseScreen : SideEffect
 
 data object ShowUnknownErrorDialog : SideEffect

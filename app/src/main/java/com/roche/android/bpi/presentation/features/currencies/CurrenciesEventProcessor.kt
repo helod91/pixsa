@@ -29,10 +29,11 @@ class CurrenciesEventProcessor(
 
         val result = getBitcoinCurrentPriceUseCase()
         if (result.result != null) {
-            emit(CurrenciesMutation.ShowContent(result.result) to null)
+            emit(CurrenciesMutation.ShowContent(result.result) to CurrenciesEffect.CurrenciesLoaded)
         }
         if (result.error != null) {
             emit(CurrenciesMutation.ShowContent(null) to exceptionHandler.parseException(result.error))
+            emit(null to CurrenciesEffect.CurrenciesFailedToLoad)
         }
     }
 }
