@@ -5,18 +5,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.br.wcabral.kotlin.android.githubcompose.ui.theme.Typography
 
 private val DarkColorPalette = darkColorScheme(
-    primary = Purple200,
+    primary = BlueRoche,
     secondary = Purple700,
-    tertiary = Teal200
+    tertiary = Teal200,
+    onPrimary = Color.DarkGray,
+    onSurfaceVariant = Color.LightGray
 )
 
 private val LightColorPalette = lightColorScheme(
-    primary = Purple500,
+    primary = BlueRoche,
     secondary = Purple700,
-    tertiary = Teal200
+    tertiary = Teal200,
+    onPrimary = Color.White,
+    onSurfaceVariant = Color.LightGray
 )
 
 @Composable
